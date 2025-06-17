@@ -1,44 +1,64 @@
 // client/src/pages/SearchResultsPage.js
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Container, Grid, Paper, Typography, Button, Divider, Chip, Box, CircularProgress } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { FlightTakeoff, FlightLand, Schedule, AttachMoney, Star, FilterList } from '@material-ui/icons';
+import { 
+  Container, 
+  Grid, 
+  Paper, 
+  Typography, 
+  Button, 
+  Divider, 
+  Chip, 
+  Box, 
+  CircularProgress,
+  styled 
+} from '@mui/material';
+import { FlightTakeoff, FlightLand, Schedule, AttachMoney, Star, FilterList } from '@mui/icons-material';
 import axios from 'axios';
 import FlightCard from '../components/FlightCard';
 import FilterPanel from '../components/FilterPanel';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const PREFIX = 'SearchResultsPage';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  header: `${PREFIX}-header`,
+  resultsCount: `${PREFIX}-resultsCount`,
+  filterButton: `${PREFIX}-filterButton`,
+  loadingContainer: `${PREFIX}-loadingContainer`,
+  noResults: `${PREFIX}-noResults`
+};
+
+const Root = styled(Container)(({ theme }) => ({
+  [`&.${classes.root}`]: {
     padding: theme.spacing(4, 0),
   },
-  header: {
+  [`& .${classes.header}`]: {
     marginBottom: theme.spacing(4),
   },
-  resultsCount: {
+  [`& .${classes.resultsCount}`]: {
     marginLeft: theme.spacing(2),
     color: theme.palette.text.secondary,
   },
-  filterButton: {
+  [`& .${classes.filterButton}`]: {
     marginLeft: 'auto',
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
   },
-  loadingContainer: {
+  [`& .${classes.loadingContainer}`]: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     height: '300px',
   },
-  noResults: {
+  [`& .${classes.noResults}`]: {
     textAlign: 'center',
     padding: theme.spacing(4),
   },
 }));
 
 const SearchResultsPage = () => {
-  const classes = useStyles();
   const location = useLocation();
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,8 +98,6 @@ const SearchResultsPage = () => {
   }, [location.search]);
 
   const applyFilters = () => {
-    // In a real app, you would filter the flights based on the filter criteria
-    // For now, we'll just log the filters
     console.log('Applying filters:', filters);
     setMobileFiltersOpen(false);
   };
@@ -98,7 +116,7 @@ const SearchResultsPage = () => {
   const passengers = searchParams.get('passengers');
 
   return (
-    <Container maxWidth="lg" className={classes.root}>
+    <Root maxWidth="lg" className={classes.root}>
       <Box display="flex" alignItems="center" className={classes.header}>
         <Typography variant="h4" component="h1">
           {departure} to {arrival}
@@ -182,7 +200,7 @@ const SearchResultsPage = () => {
           </Paper>
         </Grid>
       </Grid>
-    </Container>
+    </Root>
   );
 };
 

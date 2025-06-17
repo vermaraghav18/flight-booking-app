@@ -1,51 +1,55 @@
-// client/src/pages/ConfirmationPage.js
 import React, { useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { Container, Paper, Typography, Button, Box, Divider, Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { CheckCircle, FlightTakeoff, Email, Print } from '@material-ui/icons';
+import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  Container, 
+  Paper, 
+  Typography, 
+  Button, 
+  Box, 
+  Divider, 
+  Grid,
+  styled 
+} from '@mui/material';
+import { CheckCircle, FlightTakeoff, Email, Print } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(4, 0),
-  },
-  confirmationPaper: {
-    padding: theme.spacing(4),
-    textAlign: 'center',
-  },
-  successIcon: {
-    fontSize: '5rem',
-    color: theme.palette.success.main,
-    marginBottom: theme.spacing(2),
-  },
-  itinerary: {
-    marginTop: theme.spacing(4),
-    padding: theme.spacing(3),
-    textAlign: 'left',
-  },
-  actionButtons: {
-    marginTop: theme.spacing(4),
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-  passengerList: {
-    marginTop: theme.spacing(2),
+// Using styled API instead of makeStyles
+const PaddedContainer = styled(Container)(({ theme }) => ({
+  padding: theme.spacing(4, 0),
+}));
+
+const ConfirmationPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  textAlign: 'center',
+}));
+
+const ItineraryPaper = styled(Paper)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+  padding: theme.spacing(3),
+  textAlign: 'left',
+}));
+
+const ActionButtons = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+  '& > *': {
+    margin: theme.spacing(1),
   },
 }));
 
+const PassengerList = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+}));
+
 const ConfirmationPage = () => {
-  const classes = useStyles();
   const { id } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { bookingInfo } = useAuth();
 
   useEffect(() => {
     if (!bookingInfo || bookingInfo.bookingReference !== id) {
-      history.push('/');
+      navigate('/');
     }
-  }, [bookingInfo, id, history]);
+  }, [bookingInfo, id, navigate]);
 
   if (!bookingInfo || bookingInfo.bookingReference !== id) {
     return null;
@@ -63,9 +67,9 @@ const ConfirmationPage = () => {
   };
 
   return (
-    <Container maxWidth="md" className={classes.root}>
-      <Paper elevation={2} className={classes.confirmationPaper}>
-        <CheckCircle className={classes.successIcon} />
+    <PaddedContainer maxWidth="md">
+      <ConfirmationPaper elevation={2}>
+        <CheckCircle sx={{ fontSize: '5rem', color: 'success.main', mb: 2 }} />
         <Typography variant="h4" component="h1" gutterBottom>
           Booking Confirmed!
         </Typography>
@@ -79,7 +83,7 @@ const ConfirmationPage = () => {
           We've sent a confirmation email with your booking details.
         </Typography>
         
-        <Box className={classes.actionButtons}>
+        <ActionButtons>
           <Button
             variant="contained"
             color="primary"
@@ -95,12 +99,12 @@ const ConfirmationPage = () => {
           >
             Print Itinerary
           </Button>
-        </Box>
-      </Paper>
+        </ActionButtons>
+      </ConfirmationPaper>
       
-      <Paper elevation={2} className={classes.itinerary}>
+      <ItineraryPaper elevation={2}>
         <Typography variant="h5" component="h2" gutterBottom>
-          <FlightTakeoff fontSize="inherit" style={{ verticalAlign: 'middle', marginRight: 8 }} />
+          <FlightTakeoff fontSize="inherit" sx={{ verticalAlign: 'middle', mr: 1 }} />
           Flight Itinerary
         </Typography>
         
@@ -169,7 +173,7 @@ const ConfirmationPage = () => {
             </Typography>
             <Divider />
             
-            <Box className={classes.passengerList}>
+            <PassengerList>
               {passengers.map((passenger, index) => (
                 <Box key={index} mb={2}>
                   <Typography variant="subtitle1">
@@ -183,7 +187,7 @@ const ConfirmationPage = () => {
                   </Typography>
                 </Box>
               ))}
-            </Box>
+            </PassengerList>
           </Grid>
         </Grid>
         
@@ -208,19 +212,19 @@ const ConfirmationPage = () => {
             </Box>
           </Box>
         </Box>
-      </Paper>
+      </ItineraryPaper>
       
       <Box mt={4} textAlign="center">
         <Button
           variant="contained"
           color="primary"
           size="large"
-          onClick={() => history.push('/')}
+          onClick={() => navigate('/')}
         >
           Back to Home
         </Button>
       </Box>
-    </Container>
+    </PaddedContainer>
   );
 };
 

@@ -1,58 +1,80 @@
-// client/src/pages/FlightDetailsPage.js
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { Container, Grid, Paper, Typography, Button, Divider, Box, CircularProgress, Stepper, Step, StepLabel, Chip, Avatar } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { FlightTakeoff, FlightLand, Schedule, AttachMoney, AirlineSeatReclineNormal, Luggage } from '@material-ui/icons';
+import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  Container, 
+  Grid, 
+  Paper, 
+  Typography, 
+  Button, 
+  Divider, 
+  Box, 
+  CircularProgress, 
+  Stepper, 
+  Step, 
+  StepLabel, 
+  Chip, 
+  Avatar,
+  styled 
+} from '@mui/material';
+import { 
+  FlightTakeoff, 
+  FlightLand, 
+  Schedule, 
+  AttachMoney, 
+  AirlineSeatReclineNormal, 
+  Luggage 
+} from '@mui/icons-material';
 import axios from 'axios';
 import FlightTimeline from '../components/FlightTimeline';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(4, 0),
-  },
-  flightHeader: {
-    marginBottom: theme.spacing(4),
-  },
-  flightInfo: {
-    padding: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-  },
-  priceSection: {
-    padding: theme.spacing(3),
-    backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius,
-  },
-  airlineLogo: {
-    width: theme.spacing(6),
-    height: theme.spacing(6),
-    marginRight: theme.spacing(2),
-  },
-  bookButton: {
-    marginTop: theme.spacing(2),
-    padding: theme.spacing(1.5),
-  },
-  loadingContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '300px',
-  },
-  detailItem: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: theme.spacing(1),
-  },
-  detailIcon: {
-    marginRight: theme.spacing(1),
-    color: theme.palette.text.secondary,
-  },
+// Styled components
+const PaddedContainer = styled(Container)(({ theme }) => ({
+  padding: theme.spacing(4, 0),
+}));
+
+const FlightInfoPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  marginBottom: theme.spacing(3),
+}));
+
+const PriceSection = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(3),
+  backgroundColor: theme.palette.background.default,
+  borderRadius: theme.shape.borderRadius,
+}));
+
+const AirlineLogo = styled(Avatar)(({ theme }) => ({
+  width: theme.spacing(6),
+  height: theme.spacing(6),
+  marginRight: theme.spacing(2),
+}));
+
+const BookButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  padding: theme.spacing(1.5),
+}));
+
+const LoadingContainer = styled(Box)({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '300px',
+});
+
+const DetailItem = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  marginBottom: theme.spacing(1),
+}));
+
+const DetailIcon = styled(Box)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+  color: theme.palette.text.secondary,
 }));
 
 const FlightDetailsPage = () => {
-  const classes = useStyles();
   const { id } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [flight, setFlight] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -74,26 +96,26 @@ const FlightDetailsPage = () => {
   }, [id]);
 
   const handleBookFlight = () => {
-    history.push(`/book/${id}`);
+    navigate(`/book/${id}`);
   };
 
   if (loading) {
     return (
-      <Container maxWidth="lg" className={classes.root}>
-        <Box className={classes.loadingContainer}>
+      <PaddedContainer maxWidth="lg">
+        <LoadingContainer>
           <CircularProgress />
-        </Box>
-      </Container>
+        </LoadingContainer>
+      </PaddedContainer>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="lg" className={classes.root}>
+      <PaddedContainer maxWidth="lg">
         <Typography variant="h6" color="error">
           {error}
         </Typography>
-      </Container>
+      </PaddedContainer>
     );
   }
 
@@ -102,8 +124,8 @@ const FlightDetailsPage = () => {
   }
 
   return (
-    <Container maxWidth="lg" className={classes.root}>
-      <Box display="flex" alignItems="center" className={classes.flightHeader}>
+    <PaddedContainer maxWidth="lg">
+      <Box display="flex" alignItems="center" sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1">
           Flight Details
         </Typography>
@@ -114,15 +136,14 @@ const FlightDetailsPage = () => {
             flight.status === 'active' ? 'primary' : 
             flight.status === 'landed' ? 'secondary' : 'default'
           }
-          style={{ marginLeft: 16 }}
+          sx={{ ml: 2 }}
         />
       </Box>
 
-      <Paper elevation={2} className={classes.flightInfo}>
-        <Box display="flex" alignItems="center" mb={3}>
-          <Avatar 
+      <FlightInfoPaper elevation={2}>
+        <Box display="flex" alignItems="center" sx={{ mb: 3 }}>
+          <AirlineLogo 
             src={`https://logo.clearbit.com/${flight.airline.toLowerCase().replace(/\s/g, '')}.com`} 
-            className={classes.airlineLogo}
           />
           <Box>
             <Typography variant="h5">{flight.airline}</Typography>
@@ -140,14 +161,16 @@ const FlightDetailsPage = () => {
               duration={flight.duration}
             />
 
-            <Box mt={4}>
+            <Box sx={{ mt: 4 }}>
               <Typography variant="h6" gutterBottom>
                 Flight Information
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <Box className={classes.detailItem}>
-                    <FlightTakeoff className={classes.detailIcon} />
+                  <DetailItem>
+                    <DetailIcon>
+                      <FlightTakeoff />
+                    </DetailIcon>
                     <Box>
                       <Typography variant="body2" color="textSecondary">
                         Departure Airport
@@ -156,9 +179,11 @@ const FlightDetailsPage = () => {
                         {flight.departure.airport} ({flight.departure.iata})
                       </Typography>
                     </Box>
-                  </Box>
-                  <Box className={classes.detailItem}>
-                    <Schedule className={classes.detailIcon} />
+                  </DetailItem>
+                  <DetailItem>
+                    <DetailIcon>
+                      <Schedule />
+                    </DetailIcon>
                     <Box>
                       <Typography variant="body2" color="textSecondary">
                         Scheduled Departure
@@ -167,10 +192,12 @@ const FlightDetailsPage = () => {
                         {new Date(flight.departure.scheduled).toLocaleString()}
                       </Typography>
                     </Box>
-                  </Box>
+                  </DetailItem>
                   {flight.departure.terminal && (
-                    <Box className={classes.detailItem}>
-                      <AirlineSeatReclineNormal className={classes.detailIcon} />
+                    <DetailItem>
+                      <DetailIcon>
+                        <AirlineSeatReclineNormal />
+                      </DetailIcon>
                       <Box>
                         <Typography variant="body2" color="textSecondary">
                           Terminal/Gate
@@ -179,12 +206,14 @@ const FlightDetailsPage = () => {
                           {flight.departure.terminal}/{flight.departure.gate || 'TBD'}
                         </Typography>
                       </Box>
-                    </Box>
+                    </DetailItem>
                   )}
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Box className={classes.detailItem}>
-                    <FlightLand className={classes.detailIcon} />
+                  <DetailItem>
+                    <DetailIcon>
+                      <FlightLand />
+                    </DetailIcon>
                     <Box>
                       <Typography variant="body2" color="textSecondary">
                         Arrival Airport
@@ -193,9 +222,11 @@ const FlightDetailsPage = () => {
                         {flight.arrival.airport} ({flight.arrival.iata})
                       </Typography>
                     </Box>
-                  </Box>
-                  <Box className={classes.detailItem}>
-                    <Schedule className={classes.detailIcon} />
+                  </DetailItem>
+                  <DetailItem>
+                    <DetailIcon>
+                      <Schedule />
+                    </DetailIcon>
                     <Box>
                       <Typography variant="body2" color="textSecondary">
                         Scheduled Arrival
@@ -204,10 +235,12 @@ const FlightDetailsPage = () => {
                         {new Date(flight.arrival.scheduled).toLocaleString()}
                       </Typography>
                     </Box>
-                  </Box>
+                  </DetailItem>
                   {flight.arrival.terminal && (
-                    <Box className={classes.detailItem}>
-                      <AirlineSeatReclineNormal className={classes.detailIcon} />
+                    <DetailItem>
+                      <DetailIcon>
+                        <AirlineSeatReclineNormal />
+                      </DetailIcon>
                       <Box>
                         <Typography variant="body2" color="textSecondary">
                           Terminal/Gate
@@ -216,50 +249,49 @@ const FlightDetailsPage = () => {
                           {flight.arrival.terminal}/{flight.arrival.gate || 'TBD'}
                         </Typography>
                       </Box>
-                    </Box>
+                    </DetailItem>
                   )}
                 </Grid>
               </Grid>
             </Box>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Box className={classes.priceSection}>
+            <PriceSection>
               <Typography variant="h6" gutterBottom>
                 Pricing
               </Typography>
-              <Box display="flex" alignItems="center" mb={2}>
+              <Box display="flex" alignItems="center" sx={{ mb: 2 }}>
                 <AttachMoney fontSize="large" color="primary" />
-                <Typography variant="h4" style={{ marginLeft: 8 }}>
+                <Typography variant="h4" sx={{ ml: 1 }}>
                   {flight.price}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" style={{ marginLeft: 8 }}>
+                <Typography variant="body2" color="textSecondary" sx={{ ml: 1 }}>
                   per passenger
                 </Typography>
               </Box>
               <Typography variant="body2" color="textSecondary" gutterBottom>
                 Includes all taxes and fees
               </Typography>
-              <Button
+              <BookButton
                 fullWidth
                 variant="contained"
                 color="primary"
                 size="large"
-                className={classes.bookButton}
                 onClick={handleBookFlight}
               >
                 Book Now
-              </Button>
-              <Box mt={2}>
+              </BookButton>
+              <Box sx={{ mt: 2 }}>
                 <Typography variant="body2" color="textSecondary">
-                  <Luggage fontSize="small" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                  <Luggage fontSize="small" sx={{ verticalAlign: 'middle', mr: 0.5 }} />
                   Free carry-on bag included
                 </Typography>
               </Box>
-            </Box>
+            </PriceSection>
           </Grid>
         </Grid>
-      </Paper>
-    </Container>
+      </FlightInfoPaper>
+    </PaddedContainer>
   );
 };
 

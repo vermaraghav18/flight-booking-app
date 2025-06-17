@@ -1,72 +1,79 @@
 // client/src/pages/BookingPage.js
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { Container, Grid, Paper, Typography, Button, Stepper, Step, StepLabel, Divider, Box, CircularProgress, TextField, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Person, CreditCard, FlightTakeoff, ContactMail, Payment } from '@material-ui/icons';
+import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  Container, Grid, Paper, Typography, Button, Stepper, Step, StepLabel, 
+  Divider, Box, CircularProgress, TextField, FormControl, InputLabel, 
+  Select, MenuItem, Checkbox, FormControlLabel, styled 
+} from '@mui/material';
+import { Person, CreditCard, FlightTakeoff, ContactMail, Payment } from '@mui/icons-material';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(4, 0),
+// Styled components
+const RootContainer = styled(Container)(({ theme }) => ({
+  padding: theme.spacing(4, 0),
+}));
+
+const StyledStepper = styled(Stepper)(({ theme }) => ({
+  padding: theme.spacing(3, 0, 5),
+}));
+
+const SectionPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  marginBottom: theme.spacing(3),
+}));
+
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
+  margin: theme.spacing(1, 0),
+  width: '100%',
+}));
+
+const PassengerFormContainer = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+}));
+
+const PaymentMethodsContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(2),
+  margin: theme.spacing(2, 0),
+}));
+
+const PaymentMethodPaper = styled(Paper)(({ theme, selected }) => ({
+  flex: '1 1 200px',
+  padding: theme.spacing(2),
+  border: `1px solid ${selected ? theme.palette.primary.main : theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  cursor: 'pointer',
+  transition: 'all 0.3s',
+  backgroundColor: selected ? theme.palette.action.selected : 'inherit',
+  '&:hover': {
+    borderColor: theme.palette.primary.main,
   },
-  stepper: {
-    padding: theme.spacing(3, 0, 5),
-  },
-  section: {
-    padding: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-  },
-  formControl: {
-    margin: theme.spacing(1, 0),
-    width: '100%',
-  },
-  passengerForm: {
-    marginTop: theme.spacing(3),
-  },
-  paymentMethods: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: theme.spacing(2),
-    margin: theme.spacing(2, 0),
-  },
-  paymentMethod: {
-    flex: '1 1 200px',
-    padding: theme.spacing(2),
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: theme.shape.borderRadius,
-    cursor: 'pointer',
-    transition: 'all 0.3s',
-    '&:hover': {
-      borderColor: theme.palette.primary.main,
-    },
-    '&.selected': {
-      borderColor: theme.palette.primary.main,
-      backgroundColor: theme.palette.action.selected,
-    },
-  },
-  summaryItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    margin: theme.spacing(1, 0),
-  },
-  totalPrice: {
-    fontSize: '1.25rem',
-    fontWeight: 'bold',
-  },
-  bookButton: {
-    marginTop: theme.spacing(3),
-    padding: theme.spacing(1.5),
-  },
+}));
+
+const SummaryItem = styled(Box)({
+  display: 'flex',
+  justifyContent: 'space-between',
+  margin: theme => theme.spacing(1, 0),
+});
+
+const TotalPrice = styled(Typography)({
+  fontSize: '1.25rem',
+  fontWeight: 'bold',
+});
+
+const BookButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  padding: theme.spacing(1.5),
 }));
 
 const steps = ['Passenger Details', 'Payment', 'Confirmation'];
 
 const BookingPage = () => {
-  const classes = useStyles();
   const { id } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { user, saveBookingInfo } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [flight, setFlight] = useState(null);
@@ -199,7 +206,7 @@ const BookingPage = () => {
         flight,
         passengers,
       });
-      history.push(`/confirmation/${response.data.bookingReference}`);
+      navigate(`/confirmation/${response.data.bookingReference}`);
     } catch (err) {
       setError(err.message || 'Failed to complete booking');
     }
@@ -207,21 +214,21 @@ const BookingPage = () => {
 
   if (loading) {
     return (
-      <Container maxWidth="lg" className={classes.root}>
+      <RootContainer maxWidth="lg">
         <Box display="flex" justifyContent="center" alignItems="center" height="300px">
           <CircularProgress />
         </Box>
-      </Container>
+      </RootContainer>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="lg" className={classes.root}>
+      <RootContainer maxWidth="lg">
         <Typography variant="h6" color="error">
           {error}
         </Typography>
-      </Container>
+      </RootContainer>
     );
   }
 
@@ -230,18 +237,18 @@ const BookingPage = () => {
   }
 
   return (
-    <Container maxWidth="lg" className={classes.root}>
-      <Stepper activeStep={activeStep} className={classes.stepper}>
+    <RootContainer maxWidth="lg">
+      <StyledStepper activeStep={activeStep}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
-      </Stepper>
+      </StyledStepper>
 
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
-          <Paper elevation={2} className={classes.section}>
+          <SectionPaper elevation={2}>
             {activeStep === 0 && (
               <>
                 <Typography variant="h6" gutterBottom>
@@ -251,7 +258,7 @@ const BookingPage = () => {
                 <Divider />
                 
                 {passengers.map((passenger, index) => (
-                  <Box key={index} className={classes.passengerForm}>
+                  <PassengerFormContainer key={index}>
                     <Typography variant="subtitle1" gutterBottom>
                       Passenger {index + 1}
                       {passengers.length > 1 && (
@@ -272,7 +279,8 @@ const BookingPage = () => {
                           label="First Name"
                           value={passenger.firstName}
                           onChange={(e) => handlePassengerChange(index, 'firstName', e.target.value)}
-                          className={classes.formControl}
+                          fullWidth
+                          margin="normal"
                           required
                         />
                       </Grid>
@@ -281,7 +289,8 @@ const BookingPage = () => {
                           label="Last Name"
                           value={passenger.lastName}
                           onChange={(e) => handlePassengerChange(index, 'lastName', e.target.value)}
-                          className={classes.formControl}
+                          fullWidth
+                          margin="normal"
                           required
                         />
                       </Grid>
@@ -291,7 +300,8 @@ const BookingPage = () => {
                           type="date"
                           value={passenger.dateOfBirth}
                           onChange={(e) => handlePassengerChange(index, 'dateOfBirth', e.target.value)}
-                          className={classes.formControl}
+                          fullWidth
+                          margin="normal"
                           InputLabelProps={{ shrink: true }}
                           required
                         />
@@ -301,12 +311,13 @@ const BookingPage = () => {
                           label="Passport Number"
                           value={passenger.passportNumber}
                           onChange={(e) => handlePassengerChange(index, 'passportNumber', e.target.value)}
-                          className={classes.formControl}
+                          fullWidth
+                          margin="normal"
                           required
                         />
                       </Grid>
                       <Grid item xs={12}>
-                        <FormControl className={classes.formControl}>
+                        <StyledFormControl>
                           <InputLabel>Seat Preference</InputLabel>
                           <Select
                             value={passenger.seatPreference}
@@ -316,10 +327,10 @@ const BookingPage = () => {
                             <MenuItem value="aisle">Aisle</MenuItem>
                             <MenuItem value="middle">Middle</MenuItem>
                           </Select>
-                        </FormControl>
+                        </StyledFormControl>
                       </Grid>
                     </Grid>
-                  </Box>
+                  </PassengerFormContainer>
                 ))}
                 
                 <Box mt={2}>
@@ -342,7 +353,8 @@ const BookingPage = () => {
                         type="email"
                         value={contactInfo.email}
                         onChange={(e) => handleContactInfoChange('email', e.target.value)}
-                        className={classes.formControl}
+                        fullWidth
+                        margin="normal"
                         required
                       />
                     </Grid>
@@ -351,7 +363,8 @@ const BookingPage = () => {
                         label="Phone Number"
                         value={contactInfo.phone}
                         onChange={(e) => handleContactInfoChange('phone', e.target.value)}
-                        className={classes.formControl}
+                        fullWidth
+                        margin="normal"
                         required
                       />
                     </Grid>
@@ -360,7 +373,8 @@ const BookingPage = () => {
                         label="Street Address"
                         value={contactInfo.address.street}
                         onChange={(e) => handleContactInfoChange('address.street', e.target.value)}
-                        className={classes.formControl}
+                        fullWidth
+                        margin="normal"
                         required
                       />
                     </Grid>
@@ -369,7 +383,8 @@ const BookingPage = () => {
                         label="City"
                         value={contactInfo.address.city}
                         onChange={(e) => handleContactInfoChange('address.city', e.target.value)}
-                        className={classes.formControl}
+                        fullWidth
+                        margin="normal"
                         required
                       />
                     </Grid>
@@ -378,7 +393,8 @@ const BookingPage = () => {
                         label="State/Province"
                         value={contactInfo.address.state}
                         onChange={(e) => handleContactInfoChange('address.state', e.target.value)}
-                        className={classes.formControl}
+                        fullWidth
+                        margin="normal"
                         required
                       />
                     </Grid>
@@ -387,7 +403,8 @@ const BookingPage = () => {
                         label="ZIP/Postal Code"
                         value={contactInfo.address.zipCode}
                         onChange={(e) => handleContactInfoChange('address.zipCode', e.target.value)}
-                        className={classes.formControl}
+                        fullWidth
+                        margin="normal"
                         required
                       />
                     </Grid>
@@ -396,7 +413,8 @@ const BookingPage = () => {
                         label="Country"
                         value={contactInfo.address.country}
                         onChange={(e) => handleContactInfoChange('address.country', e.target.value)}
-                        className={classes.formControl}
+                        fullWidth
+                        margin="normal"
                         required
                       />
                     </Grid>
@@ -413,40 +431,40 @@ const BookingPage = () => {
                 </Typography>
                 <Divider />
                 
-                <Box className={classes.paymentMethods}>
-                  <Paper 
-                    elevation={0} 
-                    className={`${classes.paymentMethod} ${paymentMethod === 'creditCard' ? 'selected' : ''}`}
+                <PaymentMethodsContainer>
+                  <PaymentMethodPaper 
+                    elevation={0}
+                    selected={paymentMethod === 'creditCard'}
                     onClick={() => setPaymentMethod('creditCard')}
                   >
                     <Typography variant="subtitle1">Credit Card</Typography>
                     <Typography variant="body2" color="textSecondary">
                       Visa, Mastercard, Amex
                     </Typography>
-                  </Paper>
+                  </PaymentMethodPaper>
                   
-                  <Paper 
-                    elevation={0} 
-                    className={`${classes.paymentMethod} ${paymentMethod === 'paypal' ? 'selected' : ''}`}
+                  <PaymentMethodPaper 
+                    elevation={0}
+                    selected={paymentMethod === 'paypal'}
                     onClick={() => setPaymentMethod('paypal')}
                   >
                     <Typography variant="subtitle1">PayPal</Typography>
                     <Typography variant="body2" color="textSecondary">
                       Secure online payments
                     </Typography>
-                  </Paper>
+                  </PaymentMethodPaper>
                   
-                  <Paper 
-                    elevation={0} 
-                    className={`${classes.paymentMethod} ${paymentMethod === 'bankTransfer' ? 'selected' : ''}`}
+                  <PaymentMethodPaper 
+                    elevation={0}
+                    selected={paymentMethod === 'bankTransfer'}
                     onClick={() => setPaymentMethod('bankTransfer')}
                   >
                     <Typography variant="subtitle1">Bank Transfer</Typography>
                     <Typography variant="body2" color="textSecondary">
                       Direct bank payment
                     </Typography>
-                  </Paper>
-                </Box>
+                  </PaymentMethodPaper>
+                </PaymentMethodsContainer>
                 
                 {paymentMethod === 'creditCard' && (
                   <Box mt={4}>
@@ -458,7 +476,8 @@ const BookingPage = () => {
                       label="Card Number"
                       value={paymentDetails.cardNumber}
                       onChange={(e) => handlePaymentDetailsChange('cardNumber', e.target.value)}
-                      className={classes.formControl}
+                      fullWidth
+                      margin="normal"
                       required
                     />
                     
@@ -466,7 +485,8 @@ const BookingPage = () => {
                       label="Name on Card"
                       value={paymentDetails.cardName}
                       onChange={(e) => handlePaymentDetailsChange('cardName', e.target.value)}
-                      className={classes.formControl}
+                      fullWidth
+                      margin="normal"
                       required
                     />
                     
@@ -477,7 +497,8 @@ const BookingPage = () => {
                           placeholder="MM/YY"
                           value={paymentDetails.expiryDate}
                           onChange={(e) => handlePaymentDetailsChange('expiryDate', e.target.value)}
-                          className={classes.formControl}
+                          fullWidth
+                          margin="normal"
                           required
                         />
                       </Grid>
@@ -486,7 +507,8 @@ const BookingPage = () => {
                           label="CVV"
                           value={paymentDetails.cvv}
                           onChange={(e) => handlePaymentDetailsChange('cvv', e.target.value)}
-                          className={classes.formControl}
+                          fullWidth
+                          margin="normal"
                           required
                         />
                       </Grid>
@@ -564,7 +586,7 @@ const BookingPage = () => {
                 </Box>
               </>
             )}
-          </Paper>
+          </SectionPaper>
           
           <Box display="flex" justifyContent="space-between" mt={2}>
             <Button
@@ -598,7 +620,7 @@ const BookingPage = () => {
         </Grid>
         
         <Grid item xs={12} md={4}>
-          <Paper elevation={2} className={classes.section}>
+          <SectionPaper elevation={2}>
             <Typography variant="h6" gutterBottom>
               Price Summary
             </Typography>
@@ -606,35 +628,35 @@ const BookingPage = () => {
             
             <Box mt={2}>
               {passengers.map((_, index) => (
-                <Box key={index} className={classes.summaryItem}>
+                <SummaryItem key={index}>
                   <Typography variant="body1">
                     Passenger {index + 1} (Adult)
                   </Typography>
                   <Typography variant="body1">
                     ${flight.price}
                   </Typography>
-                </Box>
+                </SummaryItem>
               ))}
               
-              <Box className={classes.summaryItem}>
+              <SummaryItem>
                 <Typography variant="body1">Taxes & Fees</Typography>
                 <Typography variant="body1">$0</Typography>
-              </Box>
+              </SummaryItem>
               
               <Divider />
               
-              <Box className={classes.summaryItem}>
-                <Typography variant="body1" className={classes.totalPrice}>
+              <SummaryItem>
+                <TotalPrice>
                   Total
-                </Typography>
-                <Typography variant="body1" className={classes.totalPrice}>
+                </TotalPrice>
+                <TotalPrice>
                   ${flight.price * passengers.length}
-                </Typography>
-              </Box>
+                </TotalPrice>
+              </SummaryItem>
             </Box>
-          </Paper>
+          </SectionPaper>
           
-          <Paper elevation={2} className={classes.section}>
+          <SectionPaper elevation={2}>
             <Typography variant="h6" gutterBottom>
               Flight Itinerary
             </Typography>
@@ -674,10 +696,10 @@ const BookingPage = () => {
                 </Box>
               </Box>
             </Box>
-          </Paper>
+          </SectionPaper>
         </Grid>
       </Grid>
-    </Container>
+    </RootContainer>
   );
 };
 

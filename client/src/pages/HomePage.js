@@ -1,42 +1,54 @@
-// client/src/pages/HomePage.js
 import React, { useState } from 'react';
-import { Container, Grid, Paper, Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { DatePicker } from '@material-ui/pickers';
-import { FlightTakeoff, FlightLand, DateRange, People } from '@material-ui/icons';
-import { useHistory } from 'react-router-dom';
+import { 
+  Container, 
+  Grid, 
+  Paper, 
+  Typography, 
+  Button, 
+  TextField, 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  MenuItem, 
+  Box,
+  styled 
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { FlightTakeoff, FlightLand, DateRange, People } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
 import DestinationsSection from '../components/DestinationsSection';
 import TestimonialsSection from '../components/TestimonialsSection';
 
-const useStyles = makeStyles((theme) => ({
-  searchContainer: {
-    marginTop: theme.spacing(-8),
-    position: 'relative',
-    zIndex: 1,
-  },
-  searchPaper: {
-    padding: theme.spacing(4),
-    borderRadius: theme.shape.borderRadius * 2,
-    boxShadow: theme.shadows[10],
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  searchButton: {
-    height: 56,
-    marginTop: theme.spacing(2),
-  },
-  icon: {
-    marginRight: theme.spacing(1),
-    color: theme.palette.primary.main,
-  },
+// Styled components
+const SearchContainer = styled(Container)(({ theme }) => ({
+  marginTop: theme.spacing(-8),
+  position: 'relative',
+  zIndex: 1,
+}));
+
+const SearchPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[10],
+}));
+
+const SearchButton = styled(Button)(({ theme }) => ({
+  height: 56,
+  marginTop: theme.spacing(2),
+}));
+
+const FormIcon = styled(Box)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+  color: theme.palette.primary.main,
+}));
+
+const ContentContainer = styled(Container)(({ theme }) => ({
+  marginTop: theme.spacing(10),
 }));
 
 const HomePage = () => {
-  const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [searchData, setSearchData] = useState({
     departure: '',
     arrival: '',
@@ -63,19 +75,21 @@ const HomePage = () => {
       returnDate: searchData.returnDate.toISOString().split('T')[0],
       passengers: searchData.passengers,
     });
-    history.push(`/search?${queryParams}`);
+    navigate(`/search?${queryParams}`);
   };
 
   return (
     <>
       <HeroSection />
       
-      <Container maxWidth="lg" className={classes.searchContainer}>
-        <Paper className={classes.searchPaper}>
+      <SearchContainer maxWidth="lg">
+        <SearchPaper elevation={3}>
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} md={6}>
               <Box display="flex" alignItems="center">
-                <FlightTakeoff className={classes.icon} />
+                <FormIcon>
+                  <FlightTakeoff />
+                </FormIcon>
                 <TextField
                   fullWidth
                   label="From"
@@ -89,7 +103,9 @@ const HomePage = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <Box display="flex" alignItems="center">
-                <FlightLand className={classes.icon} />
+                <FormIcon>
+                  <FlightLand />
+                </FormIcon>
                 <TextField
                   fullWidth
                   label="To"
@@ -103,7 +119,9 @@ const HomePage = () => {
             </Grid>
             <Grid item xs={12} md={3}>
               <Box display="flex" alignItems="center">
-                <DateRange className={classes.icon} />
+                <FormIcon>
+                  <DateRange />
+                </FormIcon>
                 <DatePicker
                   fullWidth
                   variant="inline"
@@ -117,7 +135,9 @@ const HomePage = () => {
             </Grid>
             <Grid item xs={12} md={3}>
               <Box display="flex" alignItems="center">
-                <DateRange className={classes.icon} />
+                <FormIcon>
+                  <DateRange />
+                </FormIcon>
                 <DatePicker
                   fullWidth
                   variant="inline"
@@ -146,7 +166,9 @@ const HomePage = () => {
             </Grid>
             <Grid item xs={12} md={3}>
               <Box display="flex" alignItems="center">
-                <People className={classes.icon} />
+                <FormIcon>
+                  <People />
+                </FormIcon>
                 <TextField
                   fullWidth
                   label="Passengers"
@@ -160,25 +182,24 @@ const HomePage = () => {
               </Box>
             </Grid>
             <Grid item xs={12}>
-              <Button
+              <SearchButton
                 fullWidth
                 variant="contained"
                 color="primary"
                 size="large"
-                className={classes.searchButton}
                 onClick={handleSearch}
               >
                 Search Flights
-              </Button>
+              </SearchButton>
             </Grid>
           </Grid>
-        </Paper>
-      </Container>
+        </SearchPaper>
+      </SearchContainer>
       
-      <Container maxWidth="lg" style={{ marginTop: '80px' }}>
+      <ContentContainer maxWidth="lg">
         <DestinationsSection />
         <TestimonialsSection />
-      </Container>
+      </ContentContainer>
     </>
   );
 };

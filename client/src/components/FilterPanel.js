@@ -1,26 +1,44 @@
 // client/src/components/FilterPanel.js
 import React from 'react';
-import { Drawer, Box, Typography, Divider, Slider, Checkbox, FormControlLabel, Button, Radio, RadioGroup, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Close } from '@material-ui/icons';
+import { 
+  Drawer, 
+  Box, 
+  Typography, 
+  Divider, 
+  Slider, 
+  Checkbox, 
+  FormControlLabel, 
+  Button, 
+  Radio, 
+  RadioGroup, 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  MenuItem,
+  styled 
+} from '@mui/material';
+import { Close } from '@mui/icons-material';
 
-const useStyles = makeStyles((theme) => ({
-  drawerPaper: {
-    width: 300,
-    padding: theme.spacing(3),
-  },
-  filterSection: {
-    marginBottom: theme.spacing(3),
-  },
-  filterTitle: {
-    marginBottom: theme.spacing(1),
-  },
-  priceSlider: {
-    margin: theme.spacing(2, 1),
-  },
-  applyButton: {
-    marginTop: theme.spacing(2),
-  },
+// Styled components replacing makeStyles
+const DrawerPaper = styled(Box)(({ theme }) => ({
+  width: 300,
+  padding: theme.spacing(3),
+}));
+
+const FilterSection = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+}));
+
+const FilterTitle = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(1),
+}));
+
+const PriceSlider = styled(Slider)(({ theme }) => ({
+  margin: theme.spacing(2, 1),
+}));
+
+const ApplyButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(2),
 }));
 
 const airlines = [
@@ -41,8 +59,6 @@ const departureTimes = [
 ];
 
 const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) => {
-  const classes = useStyles();
-
   const handlePriceChange = (event, newValue) => {
     onFilterChange('priceRange', newValue);
   };
@@ -70,7 +86,7 @@ const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) 
   };
 
   const content = (
-    <Box className={classes.drawerPaper}>
+    <DrawerPaper>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Filters</Typography>
         <Button onClick={onClose} startIcon={<Close />}>Close</Button>
@@ -78,12 +94,11 @@ const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) 
       
       <Divider />
       
-      <Box className={classes.filterSection}>
-        <Typography variant="subtitle1" className={classes.filterTitle}>
+      <FilterSection>
+        <FilterTitle variant="subtitle1">
           Price Range
-        </Typography>
-        <Slider
-          className={classes.priceSlider}
+        </FilterTitle>
+        <PriceSlider
           value={filters.priceRange}
           onChange={handlePriceChange}
           valueLabelDisplay="auto"
@@ -95,12 +110,12 @@ const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) 
           <Typography variant="body2">${filters.priceRange[0]}</Typography>
           <Typography variant="body2">${filters.priceRange[1]}</Typography>
         </Box>
-      </Box>
+      </FilterSection>
       
-      <Box className={classes.filterSection}>
-        <Typography variant="subtitle1" className={classes.filterTitle}>
+      <FilterSection>
+        <FilterTitle variant="subtitle1">
           Airlines
-        </Typography>
+        </FilterTitle>
         <Box display="flex" flexDirection="column">
           {airlines.map((airline) => (
             <FormControlLabel
@@ -117,12 +132,12 @@ const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) 
             />
           ))}
         </Box>
-      </Box>
+      </FilterSection>
       
-      <Box className={classes.filterSection}>
-        <Typography variant="subtitle1" className={classes.filterTitle}>
+      <FilterSection>
+        <FilterTitle variant="subtitle1">
           Departure Times
-        </Typography>
+        </FilterTitle>
         <Box display="flex" flexDirection="column">
           {departureTimes.map((time) => (
             <FormControlLabel
@@ -139,12 +154,12 @@ const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) 
             />
           ))}
         </Box>
-      </Box>
+      </FilterSection>
       
-      <Box className={classes.filterSection}>
-        <Typography variant="subtitle1" className={classes.filterTitle}>
+      <FilterSection>
+        <FilterTitle variant="subtitle1">
           Stops
-        </Typography>
+        </FilterTitle>
         <FormControl component="fieldset">
           <RadioGroup
             aria-label="stops"
@@ -157,12 +172,12 @@ const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) 
             <FormControlLabel value="one" control={<Radio />} label="Up to 1 stop" />
           </RadioGroup>
         </FormControl>
-      </Box>
+      </FilterSection>
       
-      <Box className={classes.filterSection}>
-        <Typography variant="subtitle1" className={classes.filterTitle}>
+      <FilterSection>
+        <FilterTitle variant="subtitle1">
           Sort By
-        </Typography>
+        </FilterTitle>
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Sort By</InputLabel>
           <Select
@@ -176,18 +191,17 @@ const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) 
             <MenuItem value="departure">Departure Time (Earliest)</MenuItem>
           </Select>
         </FormControl>
-      </Box>
+      </FilterSection>
       
-      <Button
+      <ApplyButton
         fullWidth
         variant="contained"
         color="primary"
-        className={classes.applyButton}
         onClick={onApply}
       >
         Apply Filters
-      </Button>
-    </Box>
+      </ApplyButton>
+    </DrawerPaper>
   );
 
   if (mobileOpen) {
@@ -196,7 +210,12 @@ const FilterPanel = ({ filters, onFilterChange, onApply, mobileOpen, onClose }) 
         anchor="right"
         open={mobileOpen}
         onClose={onClose}
-        classes={{ paper: classes.drawerPaper }}
+        PaperProps={{
+          sx: {
+            width: 300,
+            padding: 3
+          }
+        }}
       >
         {content}
       </Drawer>

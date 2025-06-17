@@ -1,37 +1,40 @@
 // client/src/components/TestimonialsSection.js
 import React from 'react';
-import { Box, Typography, Grid, Avatar, Paper } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Star } from '@material-ui/icons';
+import { Box, Typography, Grid, Avatar, Paper, styled } from '@mui/material';
+import { Star } from '@mui/icons-material';
 
-const useStyles = makeStyles((theme) => ({
-  section: {
-    margin: theme.spacing(6, 0),
-  },
-  sectionTitle: {
-    marginBottom: theme.spacing(4),
-    textAlign: 'center',
-  },
-  testimonialCard: {
-    padding: theme.spacing(3),
-    height: '100%',
-  },
-  avatar: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-    marginRight: theme.spacing(2),
-  },
-  testimonialHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: theme.spacing(2),
-  },
-  rating: {
-    display: 'flex',
-    alignItems: 'center',
-    color: theme.palette.warning.main,
-    marginTop: theme.spacing(1),
-  },
+// Styled components
+const SectionContainer = styled(Box)(({ theme }) => ({
+  margin: theme.spacing(6, 0),
+}));
+
+const SectionTitle = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(4),
+  textAlign: 'center',
+}));
+
+const TestimonialCard = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  height: '100%',
+}));
+
+const TestimonialHeader = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  marginBottom: theme => theme.spacing(2),
+});
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  width: theme.spacing(7),
+  height: theme.spacing(7),
+  marginRight: theme.spacing(2),
+}));
+
+const RatingContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  color: theme.palette.warning.main,
+  marginTop: theme.spacing(1),
 }));
 
 const testimonials = [
@@ -62,23 +65,20 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => {
-  const classes = useStyles();
-
   return (
-    <Box className={classes.section}>
-      <Typography variant="h4" component="h2" className={classes.sectionTitle}>
+    <SectionContainer>
+      <SectionTitle variant="h4" component="h2">
         What Our Travelers Say
-      </Typography>
+      </SectionTitle>
       
       <Grid container spacing={4}>
         {testimonials.map((testimonial) => (
           <Grid item key={testimonial.id} xs={12} md={4}>
-            <Paper elevation={2} className={classes.testimonialCard}>
-              <Box className={classes.testimonialHeader}>
-                <Avatar 
+            <TestimonialCard elevation={2}>
+              <TestimonialHeader>
+                <StyledAvatar 
                   alt={testimonial.name} 
                   src={testimonial.avatar} 
-                  className={classes.avatar}
                 />
                 <Box>
                   <Typography variant="subtitle1" component="h3">
@@ -87,21 +87,21 @@ const TestimonialsSection = () => {
                   <Typography variant="body2" color="textSecondary">
                     {testimonial.location}
                   </Typography>
-                  <Box className={classes.rating}>
+                  <RatingContainer>
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star key={i} fontSize="small" />
                     ))}
-                  </Box>
+                  </RatingContainer>
                 </Box>
-              </Box>
+              </TestimonialHeader>
               <Typography variant="body1">
                 "{testimonial.comment}"
               </Typography>
-            </Paper>
+            </TestimonialCard>
           </Grid>
         ))}
       </Grid>
-    </Box>
+    </SectionContainer>
   );
 };
 

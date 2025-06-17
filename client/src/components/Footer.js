@@ -1,54 +1,62 @@
 // client/src/components/Footer.js
 import React from 'react';
-import { Container, Grid, Typography, Link, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Facebook, Twitter, Instagram, LinkedIn } from '@material-ui/icons';
+import { 
+  Container, 
+  Grid, 
+  Typography, 
+  Link, 
+  Box,
+  styled 
+} from '@mui/material';
+import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
 
-const useStyles = makeStyles((theme) => ({
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6, 0),
-    marginTop: theme.spacing(4),
-    borderTop: `1px solid ${theme.palette.divider}`,
-  },
-  link: {
-    margin: theme.spacing(1, 1.5),
-  },
-  socialIcons: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: theme.spacing(2),
-  },
-  icon: {
-    margin: theme.spacing(0, 1),
-    color: theme.palette.text.secondary,
-    '&:hover': {
-      color: theme.palette.primary.main,
-    },
+// Styled components using MUI v5's styled() API
+const StyledFooter = styled('footer')(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  padding: theme.spacing(6, 0),
+  marginTop: theme.spacing(4),
+  borderTop: `1px solid ${theme.palette.divider}`,
+}));
+
+const StyledLink = styled(Link)(({ theme }) => ({
+  margin: theme.spacing(1, 1.5),
+  variant: 'subtitle1',
+  color: theme.palette.text.secondary,
+}));
+
+const SocialIconsContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  marginTop: theme.spacing(2),
+}));
+
+const SocialIcon = styled(Box)(({ theme }) => ({
+  margin: theme.spacing(0, 1),
+  color: theme.palette.text.secondary,
+  '&:hover': {
+    color: theme.palette.primary.main,
   },
 }));
 
 const Footer = () => {
-  const classes = useStyles();
-
   return (
-    <footer className={classes.footer}>
+    <StyledFooter>
       <Container maxWidth="lg">
-        <Grid container spacing={4} justify="space-evenly">
+        <Grid container spacing={4} justifyContent="space-evenly">
           <Grid item xs={6} sm={3}>
             <Typography variant="h6" color="textPrimary" gutterBottom>
               Company
             </Typography>
             <Box display="flex" flexDirection="column">
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              <StyledLink href="#">
                 About Us
-              </Link>
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              </StyledLink>
+              <StyledLink href="#">
                 Careers
-              </Link>
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              </StyledLink>
+              <StyledLink href="#">
                 Press
-              </Link>
+              </StyledLink>
             </Box>
           </Grid>
           <Grid item xs={6} sm={3}>
@@ -56,15 +64,15 @@ const Footer = () => {
               Support
             </Typography>
             <Box display="flex" flexDirection="column">
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              <StyledLink href="#">
                 Help Center
-              </Link>
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              </StyledLink>
+              <StyledLink href="#">
                 Safety
-              </Link>
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              </StyledLink>
+              <StyledLink href="#">
                 Contact Us
-              </Link>
+              </StyledLink>
             </Box>
           </Grid>
           <Grid item xs={6} sm={3}>
@@ -72,24 +80,24 @@ const Footer = () => {
               Legal
             </Typography>
             <Box display="flex" flexDirection="column">
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              <StyledLink href="#">
                 Privacy Policy
-              </Link>
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              </StyledLink>
+              <StyledLink href="#">
                 Terms of Service
-              </Link>
-              <Link href="#" variant="subtitle1" color="textSecondary" className={classes.link}>
+              </StyledLink>
+              <StyledLink href="#">
                 Cookie Policy
-              </Link>
+              </StyledLink>
             </Box>
           </Grid>
         </Grid>
-        <Box mt={5} className={classes.socialIcons}>
-          <Facebook className={classes.icon} />
-          <Twitter className={classes.icon} />
-          <Instagram className={classes.icon} />
-          <LinkedIn className={classes.icon} />
-        </Box>
+        <SocialIconsContainer>
+          <SocialIcon component={Facebook} />
+          <SocialIcon component={Twitter} />
+          <SocialIcon component={Instagram} />
+          <SocialIcon component={LinkedIn} />
+        </SocialIconsContainer>
         <Box mt={3}>
           <Typography variant="body2" color="textSecondary" align="center">
             {'© '}
@@ -98,7 +106,7 @@ const Footer = () => {
           </Typography>
         </Box>
       </Container>
-    </footer>
+    </StyledFooter>
   );
 };
 

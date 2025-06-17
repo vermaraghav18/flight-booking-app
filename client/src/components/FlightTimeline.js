@@ -1,109 +1,116 @@
 // client/src/components/FlightTimeline.js
 import React from 'react';
-import { Box, Typography, Divider } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { FlightTakeoff, FlightLand } from '@material-ui/icons';
+import { Box, Typography, Divider, styled } from '@mui/material';
+import { FlightTakeoff, FlightLand } from '@mui/icons-material';
 
-const useStyles = makeStyles((theme) => ({
-  timeline: {
-    position: 'relative',
-    padding: theme.spacing(0, 2),
-  },
-  timelineItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: theme.spacing(2),
-  },
-  timelineContent: {
-    flex: 1,
-  },
-  timelineIcon: {
-    margin: theme.spacing(0, 2),
-    color: theme.palette.primary.main,
-  },
-  timelineDivider: {
-    position: 'absolute',
-    left: '50%',
-    top: 0,
-    bottom: 0,
-    width: 2,
-    backgroundColor: theme.palette.divider,
-    transform: 'translateX(-50%)',
-    zIndex: -1,
-  },
-  time: {
-    fontWeight: 'bold',
-    fontSize: '1.2rem',
-  },
-  location: {
-    fontWeight: 'bold',
-  },
-  duration: {
-    textAlign: 'center',
-    margin: theme.spacing(2, 0),
-    color: theme.palette.text.secondary,
-  },
+// Styled components replacing makeStyles
+const TimelineContainer = styled(Box)({
+  position: 'relative',
+  padding: '0 16px', // theme.spacing(0, 2) = 16px
+});
+
+const TimelineItem = styled(Box)({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '16px', // theme.spacing(2) = 16px
+});
+
+const TimelineContent = styled(Box)({
+  flex: 1,
+});
+
+const TimelineIcon = styled(Box)(({ theme }) => ({
+  margin: '0 16px', // theme.spacing(0, 2) = 0 16px
+  color: theme.palette.primary.main,
+}));
+
+const TimelineDivider = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  left: '50%',
+  top: 0,
+  bottom: 0,
+  width: '2px',
+  backgroundColor: theme.palette.divider,
+  transform: 'translateX(-50%)',
+  zIndex: -1,
+}));
+
+const TimeText = styled(Typography)({
+  fontWeight: 'bold',
+  fontSize: '1.2rem',
+});
+
+const LocationText = styled(Typography)({
+  fontWeight: 'bold',
+});
+
+const DurationContainer = styled(Box)(({ theme }) => ({
+  textAlign: 'center',
+  margin: '16px 0', // theme.spacing(2, 0) = 16px 0
+  color: theme.palette.text.secondary,
 }));
 
 const FlightTimeline = ({ departure, arrival, duration }) => {
-  const classes = useStyles();
-
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
-    <Box className={classes.timeline}>
-      <Box className={classes.timelineDivider} />
+    <TimelineContainer>
+      <TimelineDivider />
       
-      <Box className={classes.timelineItem}>
-        <Box className={classes.timelineContent} textAlign="right">
-          <Typography variant="body1" className={classes.time}>
+      <TimelineItem>
+        <TimelineContent textAlign="right">
+          <TimeText variant="body1">
             {formatTime(departure.scheduled)}
-          </Typography>
+          </TimeText>
           <Typography variant="body2">
             {departure.airport} ({departure.iata})
           </Typography>
-        </Box>
-        <FlightTakeoff className={classes.timelineIcon} fontSize="large" />
-        <Box className={classes.timelineContent}>
-          <Typography variant="body1" className={classes.location}>
+        </TimelineContent>
+        <TimelineIcon>
+          <FlightTakeoff fontSize="large" />
+        </TimelineIcon>
+        <TimelineContent>
+          <LocationText variant="body1">
             Departure
-          </Typography>
+          </LocationText>
           <Typography variant="body2">
             Terminal {departure.terminal || 'TBD'}, Gate {departure.gate || 'TBD'}
           </Typography>
-        </Box>
-      </Box>
+        </TimelineContent>
+      </TimelineItem>
       
-      <Box className={classes.duration}>
+      <DurationContainer>
         <Typography variant="body1">
           {duration}
         </Typography>
-      </Box>
+      </DurationContainer>
       
-      <Box className={classes.timelineItem}>
-        <Box className={classes.timelineContent} textAlign="right">
-          <Typography variant="body1" className={classes.time}>
+      <TimelineItem>
+        <TimelineContent textAlign="right">
+          <TimeText variant="body1">
             {formatTime(arrival.scheduled)}
-          </Typography>
+          </TimeText>
           <Typography variant="body2">
             {arrival.airport} ({arrival.iata})
           </Typography>
-        </Box>
-        <FlightLand className={classes.timelineIcon} fontSize="large" />
-        <Box className={classes.timelineContent}>
-          <Typography variant="body1" className={classes.location}>
+        </TimelineContent>
+        <TimelineIcon>
+          <FlightLand fontSize="large" />
+        </TimelineIcon>
+        <TimelineContent>
+          <LocationText variant="body1">
             Arrival
-          </Typography>
+          </LocationText>
           <Typography variant="body2">
             Terminal {arrival.terminal || 'TBD'}, Gate {arrival.gate || 'TBD'}
           </Typography>
-        </Box>
-      </Box>
-    </Box>
+        </TimelineContent>
+      </TimelineItem>
+    </TimelineContainer>
   );
 };
 
